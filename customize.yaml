@@ -1,0 +1,47 @@
+device_tracker.hplaptopnexus:
+  hidden: true
+sensor.lumenhygro_temperature:
+  hidden: true
+sensor.nexuss_iphone_battery_state:
+  hidden: true
+sensor.nexuss_iphone_battery_level:
+  hidden: true
+#light.motion_sensor:
+#  hidden: true
+sensor.tradfri_motion_sensor_2:
+  hidden: false
+sensor.tradfri_remote_control_cocina:
+  hidden: false
+variable.night_off:
+  hidden: true
+light.main_door_lamp:
+  hidden: true
+light.family_room:
+  icon: mdi:ceiling-light
+switch.main_door_lamp:
+  icon: mdi:wall-sconce-flat
+switch.garden_lamp:
+  icon: mdi:wall-sconce-flat
+switch.family_room_lamp:
+  icon: mdi:lamp
+light.cocina:
+  friendly_name: "Cocina"
+  icon: mdi:stove
+sensor.luftdaten_13731_p1:
+  friendly_name: "HBG P10"
+sensor.luftdaten_13731_p2:
+  friendly_name: "HBG P2.5"
+
+group.all_lights:
+  hidden: false
+  friendly_name: Lights
+group.all_switches:
+  hidden: false
+group.cocina_room:
+  hidden: true
+#group.family_room_ceiling:
+#  hidden: true
+#group.main_door_lamp:
+#  hidden: true
+#group.family_room_ball:
+#  hidden: true

@@ -1,0 +1,402 @@
+#  - id: test_1
+#    alias: "test 1"
+#    trigger:
+#      platform: state
+#      entity_id: light.living_room_ball_lamp
+#      to: 'on'
+#    action:
+#      service: script.decoration_on
+      
+#  - id: test_2
+#    alias: "test 2"
+#    trigger:
+#      platform: state
+#      entity_id: light.tradfri_bulb_gu10_ws_400lm
+#      to: 'off'
+#    action:
+#      service: script.decoration_off
+
+  - id: update_networkmap
+    alias: 'Zigbee Map update'  
+    hide_entity: true  
+    trigger:
+      platform: time_pattern
+      minutes: '/10'
+      seconds: 00
+    action:
+      service: zigbee2mqtt_networkmap.update
+
+  - alias: "Congelador door open"
+    trigger:
+      platform: template
+      value_template: "{{ (states.sensor.congelador_temperature.state | int > -5) }}"
+    action:
+      service: notify.notify
+      data:
+        message: "Congelador door open!"
+
+  - alias: "Nevera door open"
+    trigger:
+      platform: template
+      value_template: "{{ (states.sensor.nevera_temperature.state | int > 11) }}"
+    action:
+      service: notify.notify
+      data:
+        message: "Nevera door open!"
+
+  - alias: "Someone at home"
+    trigger:
+      platform: state
+      entity_id: group.indoors_motion
+      to: 'on'
+    action:
+      service: notify.notify
+      data:
+        message: "Someone at home?"
+
+  - alias: "Karolina at home"
+    trigger:
+      platform: state
+      entity_id: device_tracker.karolina_huawei_2
+      to: 'home'
+    action:
+      service: notify.notify
+      data:
+        message: "Karolina has arrived home!"
+
+  - alias: "Motion Main Door Notification"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.0xd0cf5efffef34139_occupancy
+      to: 'on'
+    condition:
+      condition: state
+      entity_id: device_tracker.nexuss_iphone_2
+      state: 'not_home'
+    action:
+      service: notify.notify
+      data:
+        message: "Motion at the Main Door!"
+
+  - alias: "Decoration sunrise check"
+    trigger:
+      platform: state
+      entity_id: variable.night_off
+      to: 'False'
+    condition:
+      condition: numeric_state
+      entity_id: sensor.lux_value
+      below: 12
+    action:
+      - service: script.decoration_on
+#      - service: switch.turn_on
+#        entity_id: group.decoration
+#      - service: light.turn_on
+#        entity_id: light.living_room_ball_lamp
+
+  - alias: "Decoration low illuminance trigger"
+    trigger:
+      platform: template
+      value_template: "{{ (states.sensor.lux_value.state | int < 12) and (states.variable.night_off.state == 'False') }}"
+    action:
+      - service: script.decoration_on
+#      - service: switch.turn_on
+#        entity_id: group.decoration
+#      - service: light.turn_on
+#        entity_id: light.living_room_ball_lamp
+
+  - alias: "Decoration high illuminance trigger"
+    trigger:
+      platform: template
+      value_template: "{{ states.sensor.lux_value.state | int > 20 }}"
+    action:
+      - service: script.decoration_off
+#      - service: switch.turn_off
+#        entity_id: group.decoration
+#      - service: light.turn_off
+#        entity_id: light.living_room_ball_lamp
+
+#  - alias: "Decoration off after midnight"
+#    trigger:
+#      platform: state
+#      entity_id: group.decoration
+#      to: 'on'
+#    condition: 
+#      - condition: time
+#        after: '00:00:01'
+#      - condition: state
+#        entity_id: binary_sensor.motion_lr
+#        state: 'off'
+#        for:
+#          minutes: 20
+#    action:
+#      - service: switch.turn_off
+#        entity_id: group.decoration
+#      - service: variable.set_variable
+#        data:
+#          variable: night_off
+#          value_template: 'True'
+
+  - alias: "Decoration time to off time after midnight"
+# Test to check if it works after midnight
+    trigger:
+      platform: time
+      at: '00:20:00'
+    condition:
+      condition: state
+      entity_id: group.indoors_motion
+      state: 'off'
+      for:
+        minutes: 20
+    action:
+      - service: script.decoration_off
+#      - service: switch.turn_off
+#        entity_id: group.decoration
+#      - service: light.turn_off
+#        entity_id: light.living_room_ball_lamp
+      - service: variable.set_variable
+        data:
+          variable: night_off
+          value_template: 'True'
+
+  - alias: "Decoration time to off time"
+# It only works until midnight
+    trigger:
+      platform: time
+      at: '22:30:00'
+    condition:
+      condition: state
+      entity_id: group.indoors_motion
+      state: 'off'
+      for:
+        minutes: 20
+    action:
+      - service: script.decoration_off
+#      - service: switch.turn_off
+#        entity_id: group.decoration
+#      - service: light.turn_off
+#        entity_id: light.living_room_ball_lamp
+      - service: variable.set_variable
+        data:
+          variable: night_off
+          value_template: 'True'
+
+  - alias: "Decoration time to off PIR"
+    trigger:
+      platform: state
+      entity_id: group.indoors_motion
+      to: 'off'
+      for:
+        minutes: 20
+    condition:
+      - condition: time
+        after: '22:30:00'
+    action:
+      - service: script.decoration_off
+#      - service: switch.turn_off
+#        entity_id: group.decoration
+#      - service: light.turn_off
+#        entity_id: light.living_room_ball_lamp
+      - service: variable.set_variable
+        data:
+          variable: night_off
+          value_template: 'True'
+
+  - alias: 'Decoration reset night_off flag on sunrise'
+    trigger:
+      - platform: sun
+        event: sunrise
+    action:
+      - service: variable.set_variable
+        data:
+          variable: night_off
+          value_template: 'False'
+      - service: script.decoration_off
+#      - service: switch.turn_off
+#        entity_id: group.decoration
+#      - service: light.turn_off
+#        entity_id: light.living_room_ball_lamp
+
+  - alias: "Decoration dark morning"
+    trigger:
+      platform: state
+      entity_id: group.indoors_motion
+      to: 'on'
+    condition:
+      - condition: time
+        after: '06:00:00'
+      - condition: time
+        before: '09:00:00'
+    action:
+      service: variable.set_variable
+      data:
+        variable: night_off
+        value_template: 'False'
+
+  - alias: "Motion Main Door Lamp ON"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.0xd0cf5efffef34139_occupancy
+      to: 'on'
+    condition:
+      condition: numeric_state
+      entity_id: sensor.lux_value
+      below: 12
+    action:
+#      - service: switch.turn_on
+#        entity_id: switch.testsw
+      - service: switch.turn_on
+        entity_id: switch.main_door_lamp
+#      - service: notify.notify
+#        data:
+#          message: "Motion at the Main Door!"
+
+  - alias: "Motion Main Door Lamp OFF"
+    trigger:
+      platform: state
+      entity_id: binary_sensor.0xd0cf5efffef34139_occupancy
+      to: 'off'
+      for: 
+        minutes: 2
+    action:
+ #     - service: switch.turn_off
+ #       entity_id: switch.testsw
+      - service: switch.turn_off
+        entity_id: switch.main_door_lamp
+
+  # Automation for sending MQTT message on input select change
+  - alias: Zigbee2mqtt Log Level
+    initial_state: "on"
+    trigger:
+      platform: state
+      entity_id: input_select.zigbee2mqtt_log_level
+    action:
+      - service: mqtt.publish
+        data:
+          payload_template: "{{ states('input_select.zigbee2mqtt_log_level') }}"
+          topic: zigbee2mqtt/bridge/config/log_level
+
+  # Automation to start timer when enable join is turned on
+  - id: zigbee_join_enabled
+    alias: Zigbee Join Enabled
+    hide_entity: true
+    trigger:
+      platform: state
+      entity_id: switch.zigbee2mqtt_main_join
+      to: "on"
+    action:
+      service: timer.start
+      entity_id: timer.zigbee_permit_join
+  # Automation to stop timer when switch turned off and turn off switch when timer finished
+  - id: zigbee_join_disabled
+    alias: Zigbee Join Disabled
+    hide_entity: true
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.zigbee_permit_join
+      - platform: state
+        entity_id: switch.zigbee2mqtt_main_join
+        to: "off"
+    action:
+      - service: timer.cancel
+        data:
+          entity_id: timer.zigbee_permit_join
+      - service: switch.turn_off
+        entity_id: switch.zigbee2mqtt_main_join
+
+#  # Automation to start timer when enable join is turned on
+#  - id: enable_zigbee_join
+#    alias: Enable Zigbee joining
+#    hide_entity: true
+#    trigger:
+#      platform: state
+#      entity_id: input_boolean.zigbee_permit_join
+#      to: 'on'
+#    action:
+#    - service: mqtt.publish
+#      data:
+#        topic: zigbee2mqtt/bridge/config/permit_join
+#        payload: 'true'
+#    - service: timer.start
+#      data:
+#        entity_id: timer.zigbee_permit_join
+# Automation to stop timer when switch turned off and turn off switch when timer finished
+#  - id: disable_zigbee_join
+#    alias: Disable Zigbee joining
+#    trigger:
+#    - entity_id: input_boolean.zigbee_permit_join
+#      platform: state
+#      to: 'off'
+#    action:
+#    - data:
+#        payload: 'false'
+#        topic: zigbee2mqtt/bridge/config/permit_join
+#      service: mqtt.publish
+#    - data:
+#        entity_id: timer.zigbee_permit_join
+#      service: timer.cancel
+#    hide_entity: true
+#  - id: disable_zigbee_join_timer
+#    alias: Disable Zigbee joining by timer
+#    hide_entity: true
+#    trigger:
+#    - platform: event
+#      event_type: timer.finished
+#      event_data:
+#        entity_id: timer.zigbee_permit_join
+#    action:
+#    - service: mqtt.publish
+#      data:
+#        topic: zigbee2mqtt/bridge/config/permit_join
+#        payload: 'false'
+#    - service: input_boolean.turn_off
+#      data:
+#        entity_id: input_boolean.zigbee_permit_join
+#  - id: enable_zigbee_join
+#    alias: Enable Zigbee joining
+#    hide_entity: true
+#    trigger:
+#      platform: state
+#      entity_id: input_boolean.zigbee_permit_join
+#      to: 'on'
+#    action:
+#    - service: mqtt.publish
+#      data:
+#        topic: zigbee2mqtt/bridge/config/permit_join
+#        payload: 'true'
+#    - service: timer.start
+#      data:
+#        entity_id: timer.zigbee_permit_join
+#  - id: disable_zigbee_join
+#    alias: Disable Zigbee joining
+#    trigger:
+#    - entity_id: input_boolean.zigbee_permit_join
+#      platform: state
+#      to: 'off'
+#    action:
+#    - data:
+#        payload: 'false'
+#        topic: zigbee2mqtt/bridge/config/permit_join
+#      service: mqtt.publish
+#    - data:
+#        entity_id: timer.zigbee_permit_join
+#      service: timer.cancel
+#    hide_entity: true
+#  - id: disable_zigbee_join_timer
+#    alias: Disable Zigbee joining by timer
+#    hide_entity: true
+#    trigger:
+#    - platform: event
+#      event_type: timer.finished
+#      event_data:
+#        entity_id: timer.zigbee_permit_join
+#    action:
+#    - service: mqtt.publish
+#      data:
+#        topic: zigbee2mqtt/bridge/config/permit_join
+#        payload: 'false'
+#    - service: input_boolean.turn_off
+#      data:
+#        entity_id: input_boolean.zigbee_permit_join

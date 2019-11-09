@@ -1,0 +1,188 @@
+default_view:
+  name: Main
+  view: yes
+  entities:
+#    - group.all_lights
+    - group.room_lights
+#    - group.all_switches
+    - group.ambient
+    - group.environment
+    - group.all_devices
+    - media_player.squeezebox_receiver
+    - media_player.squeezebox_boom
+#    - device_tracker.karolina_huawei
+    - device_tracker.karolina_huawei_2
+    - device_tracker.karolinasiphone_2
+    - device_tracker.it000078_2
+    - device_tracker.hplaptopnexus
+    - binary_sensor.living_room
+    - binary_sensor.0xd0cf5efffe137419_occupancy
+    - binary_sensor.0xd0cf5efffef34139_occupancy
+#    - binary_sensor.motion_md
+    - sun.sun
+    - group.zigbee_group
+    - group.HueMS
+    - history_graph.temperature_graph
+    - history_graph.air_quality_graph
+
+TestZB:
+  name: TestZigbee
+  entities:
+    - switch.0x000d6ffffedacc35_switch
+
+ambient:
+  name: Ambient
+  entities:
+    - switch.decoration
+    - switch.0x000d6ffffedacc35_switch
+#    - group.decoration
+#    - light.mqtt_json_light
+
+HueMS:
+  name: Hue Motion Sensor
+  control: hidden
+  entities:
+    - binary_sensor.0x0017880104b4cf95_occupancy
+    - sensor.0x0017880104b4cf95_illuminance
+    - sensor.0x0017880104b4cf95_temperature
+    - sensor.huetemp_rectified
+
+room_lights:
+  name: Lights
+  entities:
+    - light.cocina
+#    - group.family_room_ceiling
+    - light.family_room
+    - switch.family_room_lamp
+    - switch.main_door_lamp
+    - switch.garden_lamp
+    - light.living_room_ball_lamp
+    
+# cocina_room:
+#  name: Cocina
+#  icon: mdi:stove
+#  entities:
+#    - light.tradfri_bulb_gu10_ws_400lm
+#    - light.tradfri_bulb_gu10_ws_400lm_2
+#    - light.tradfri_bulb_gu10_ws_400lm_3
+#    - light.tradfri_bulb_gu10_ws_400lm_4
+
+family_room_ceiling:
+  name: Family Room Ceiling Lamp
+  entities:
+    - light.family_room
+
+#cocina:
+#  name: Cocina
+#  view: no
+#  entities:
+#    - light.tradfri_bulb_gu10_ws_400lm
+#    - light.tradfri_bulb_gu10_ws_400lm_2
+#    - light.tradfri_bulb_gu10_ws_400lm_3
+#    - light.tradfri_bulb_gu10_ws_400lm_4
+
+environment:
+  name: Environment
+  control: hidden
+#  view: no
+  entities:
+    - sensor.lux_value
+    - sensor.indoors_1st_floor_temperature
+    - sensor.indoors_2nd_floor_temperature
+    - sensor.indoors_1st_floor_humidity
+    - sensor.indoors_2nd_floor_humidity
+    - sensor.weather_temperature
+    - sensor.weather_humidity
+    
+decoration:
+  name: Decoration
+  entities:
+    - switch.decoration
+    - switch.garden_lamp
+    - switch.0x000d6ffffedacc35_switch
+    - light.living_room_ball_lamp
+#    - switch.family_room_lamp
+
+decorationautomation:
+  name: Decoration Automation
+  view: no
+  entities:
+    - automation.decoration_high_illuminance_trigger
+    - automation.decoration_low_illuminance_trigger
+    - automation.decoration_reset_night_off_flag_on_sunrise
+    - automation.decoration_sunrise_check
+    - automation.decoration_time_to_off_pir
+#    - automation.decoration_off_after_midnight
+    - automation.decoration_time_to_off_time
+    - automation.decoration_dark_morning
+    
+surveillance:
+  name: Surveillance
+  view: no
+  entities:
+    - automation.someone_at_home
+    - automation.karolina_at_home
+    - automation.motion_main_door_notification
+
+indoors_motion:
+  name: Indoors Motion
+  view: no
+  entities:
+    - binary_sensor.0xd0cf5efffe137419_occupancy
+    - binary_sensor.motion_lr
+    - binary_sensor.0x0017880104b4cf95_occupancy
+    
+zigbee_group:
+  name: Zigbee
+  view: yes
+  control: hidden
+  entities:
+#    - input_boolean.zigbee_permit_join
+#    - timer.zigbee_permit_join
+#    - sensor.bridge_state
+    - sensor.bridge_state
+    - sensor.zigbee2mqtt_version
+    - sensor.coordinator_version
+    - input_select.zigbee2mqtt_log_level
+    - switch.zigbee2mqtt_main_join
+    - timer.zigbee_permit_join
+    - input_text.zigbee2mqtt_old_name
+    - input_text.zigbee2mqtt_new_name
+    - script.zigbee2mqtt_rename
+    - input_text.zigbee2mqtt_remove
+    - script.zigbee2mqtt_remove
+
+automation:
+  name: Automation
+  view: yes
+  entities:
+    - group.decorationautomation
+    - group.surveillance
+
+cold:
+  name: Frío
+  view: yes
+  entities:
+    - sensor.nevera_temperature
+    - sensor.nevera_humidity
+    - sensor.congelador_temperature
+    - sensor.congelador_humidity
+
+Link:
+  name: Link
+  view: yes
+  entities:
+    - sensor.0x0017880104b4cf95_linkquality
+
+battery:
+  name: Battery
+  view: yes
+  entities:
+    - sensor.remote_control_cocina
+    - sensor.tradfri_motion_sensor_2
+    - sensor.indoors_1st_floor_battery
+    - sensor.indoors_2nd_floor_battery
+    - sensor.nevera_battery
+    - sensor.congelador_battery
+    - sensor.lumenhygro_temperature_battery
+    - sensor.0x0017880104b4cf95_battery

@@ -1,0 +1,28 @@
+zigbee2mqtt_rename:
+  alias: Zigbee2mqtt Rename
+  sequence:
+    service: mqtt.publish
+    data_template:
+      topic: zigbee2mqtt/bridge/config/rename
+      payload_template: >-
+        {
+          "old": "{{ states.input_text.zigbee2mqtt_old_name.state | string }}",
+          "new": "{{ states.input_text.zigbee2mqtt_new_name.state | string }}"
+        }
+zigbee2mqtt_remove:
+  alias: Zigbee2mqtt Remove
+  sequence:
+    service: mqtt.publish
+    data_template:
+      topic: zigbee2mqtt/bridge/config/remove
+      payload_template: "{{ states.input_text.zigbee2mqtt_remove.state | string }}"
+
+decoration_on:
+  sequence:
+    service: homeassistant.turn_on
+    entity_id: group.decoration
+  
+decoration_off:
+  sequence:
+    service: homeassistant.turn_off
+    entity_id: group.decoration

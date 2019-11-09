@@ -1,0 +1,434 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret latitude
+  longitude: !secret longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 42
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Stockholm
+  # Customization file
+  customize: !include customize.yaml
+#  auth_providers:
+#   - type: legacy_api_password
+#     api_password: !secret http_password
+#   - type: homeassistant
+
+webhook:
+ 
+zigbee2mqtt_networkmap:
+  #topic: your topic (optional, default zigbee2mqtt)
+
+panel_iframe:
+#  configurator:
+#    title: Configurator
+#    icon: mdi:wrench
+#    url: http://hassio.home.local:3218
+  networkmap:
+    title: 'Zigbee Map'
+    url: '/local/community/zigbee2mqtt_networkmap/map.html'
+    icon: 'mdi:graphql'
+
+# Show links to resources in log and frontend
+# introduction:
+
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+http:
+  # Secrets are defined in the file secrets.yaml
+#  api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+#  base_url: 
+
+system_health:
+
+mqtt:
+  discovery: true
+  discovery_prefix: homeassistant
+  broker: 192.168.2.211
+  port: 1883
+  client_id: home-assistant-1
+  username: mqtt
+  password: mqtt
+  birth_message:
+    topic: 'hass/status'
+    payload: 'online'
+  will_message:
+    topic: 'hass/status'
+    payload: 'offline'
+
+ifttt:
+  key: !secret ifttt
+  
+luftdaten:
+  sensor_id: !secret sensor_id1
+  show_on_map: false
+  scan_interval: 240
+  sensors:
+    monitored_conditions:
+      - P1
+      - P2
+#  - sensor_id: !secret sensor_id2
+#    show_on_map: false
+#    scan_interval: 241
+#    sensors:
+#      monitored_conditions:
+#        - temperature
+#        - humidity
+#        - pressure
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+discovery:
+  ignore:
+#    - ikea_tradfri
+    - apple_tv
+
+variable:
+  night_off:
+    value: false
+
+ios:
+
+#apple_tv:
+#  - host: 192.168.2.199
+#    start_off: true
+
+homekit:
+
+media_player:
+  - platform: squeezebox
+    host: 192.168.2.162
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# Allows combining several sensor into one graph
+history_graph:
+  grtemp:
+    name: Temperature Graph
+    entities:
+      - sensor.indoors_1st_floor_temperature
+      - sensor.indoors_2nd_floor_temperature
+      - sensor.weather_temperature
+#.    - !secret sensor_id2_temperature
+  grairqlty:
+    name: Air Quality Graph
+    entities:
+      - !secret sensor_id1_p1
+      - !secret sensor_id1_p2
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Text to speech
+tts:
+  - platform: google_translate
+    service_name: google_say
+
+# Cloud
+cloud:
+
+# RFXtrx RFXCOM
+rfxtrx:
+  device: /dev/serial/by-id/usb-RFXCOM_RFXtrx433_A11D28G3-if00-port0
+#  device: /dev/ttyUSB0
+
+switch:
+  - platform: rfxtrx
+    automatic_add: False
+    signal_repetitions: 1
+    devices:
+      0b1100010076022a01010f80:
+        name: testsw
+  - platform: rfxtrx
+    signal_repetitions: 5
+    devices:
+      0b1100000005aa2a0c010f60:
+        name: "Family Room Lamp"
+      0b1100000076022a02010f80:
+        name: "Decoration"
+      0b1100040076022a03010f80:
+        name: "Garden Lamp"
+      0b110072000f98f20d010f70:
+        name: "Main Door Lamp"
+    # Switch for enabling joining
+  - platform: mqtt
+    name: "Zigbee2mqtt Main Join"
+    state_topic: "zigbee2mqtt/bridge/config/permit_join"
+    command_topic: "zigbee2mqtt/bridge/config/permit_join"
+    payload_on: "true"
+    payload_off: "false"
+
+light:
+  - platform: "mqtt"
+    name: "Living Room Ball Lamp"
+    state_topic: "zigbee2mqtt/0x000d6ffffe62fa15"
+    availability_topic: "zigbee2mqtt/bridge/state"
+    brightness: true
+    schema: "json"
+    command_topic: "zigbee2mqtt/0x000d6ffffe62fa15/set"
+  - platform: rfxtrx
+    automatic_add: False
+    signal_repetitions: 1
+    devices:
+      0b1100020005aa2a0b010f70:
+        name: "Family Room"
+  - platform: group
+    name: Cocina
+    entities:
+      - light.tradfri_bulb_gu10_ws_400lm
+      - light.tradfri_bulb_gu10_ws_400lm_2
+      - light.tradfri_bulb_gu10_ws_400lm_3
+      - light.tradfri_bulb_gu10_ws_400lm_4
+#  - platform: "mqtt"
+#    state_topic: "zigbee2mqtt/decorationball"
+#    availability_topic: "zigbee2mqtt/bridge/state"
+#    brightness: true
+#    schema: "json"
+#    command_topic: "zigbee2mqtt/decorationball/set"
+
+timer:
+  zigbee_permit_join:
+    name: Time remaining
+    duration: 600
+
+#input_boolean:
+#  zigbee_permit_join:
+#    name: Allow devices to join
+#    initial: off
+#    icon: mdi:cellphone-wireless
+
+sensor:
+  - platform: "mqtt"
+    state_topic: "zigbee2mqtt/0x000d6ffffe62fa15"
+    availability_topic: "zigbee2mqtt/bridge/state"
+    unit_of_measurement: "-"
+    value_template: "{{ value_json.linkquality }}"
+#  - platform: time_date
+#    display_options:
+#      - 'date_time'
+  # Sensor for monitoring the bridge state
+  - platform: mqtt
+    name: Bridge state
+    state_topic: "zigbee2mqtt/bridge/state"
+    icon: mdi:router-wireless
+  # Sensor for Showing the Zigbee2mqtt Version
+  - platform: mqtt
+    name: Zigbee2mqtt Version
+    state_topic: "zigbee2mqtt/bridge/config"
+    value_template: "{{ value_json.version }}"
+    icon: mdi:zigbee
+  # Sensor for Showing the Coordinator Version
+  - platform: mqtt
+    name: Coordinator Version
+    state_topic: "zigbee2mqtt/bridge/config"
+    value_template: "{{ value_json.coordinator }}"
+    icon: mdi:chip
+#  - platform: "mqtt"
+#    state_topic: "zigbee2mqtt/decorationball"
+#    availability_topic: "zigbee2mqtt/bridge/state"
+#    unit_of_measurement: "-"
+#    value_template: "{{ value_json.linkquality }}"
+  - platform: yr
+    name: Weather
+    monitored_conditions:
+      - temperature
+      - humidity
+  - platform: rfxtrx
+    automatic_add: False
+    devices:
+      0a5207002f0e0291270289:
+        name: LumenHygro
+        data_type:
+          - Temperature
+      0a520a012e0100e1320169:
+        name: "Indoors 1st Floor"
+        data_type:
+          - Temperature
+          - Humidity
+      0a520a0bb6020121320169:
+        name: "Indoors 2nd Floor"
+        data_type:
+            - Temperature
+            - Humidity
+      0a520a06ba030061250279:
+        name: "Nevera"
+        data_type:
+            - Temperature
+            - Humidity
+      0a520a241401010b340179:
+        name: "Congelador"
+        data_type:
+            - Temperature
+            - Humidity
+            
+  - platform: template
+    sensors:
+      lux_value:
+        value_template: >
+          {% if states('sensor.LumenHygro_temperature') | int > 0 %}
+            {{ (0.02755061*e**(0.142984576*(states('sensor.LumenHygro_temperature') | int))) | round(0) }}
+          {% else %}
+            {% if states('sensor.LumenHygro_temperature') | int <= 0 %}
+              {{ 0 }}
+            {% endif %}
+          {% endif %}
+        friendly_name: "Illuminance"
+        unit_of_measurement: "lx"
+        device_class: illuminance
+      nevera_battery:
+        friendly_name: "Nevera Battery"
+        entity_id: sensor.nevera_temperature
+        value_template: "{{ state_attr('sensor.nevera_temperature', 'Battery numeric') * 11 + 1 }}"
+        unit_of_measurement: "%"
+      congelador_battery:
+        friendly_name: "Congelador Battery"
+        entity_id: sensor.congelador_temperature
+        value_template: "{{ state_attr('sensor.congelador_temperature', 'Battery numeric') * 11 + 1 }}"
+        unit_of_measurement: "%"
+      indoors_1st_floor_battery:
+        friendly_name: "1st Floor Termometer Battery"
+        entity_id: sensor.indoors_1st_floor_temperature
+        value_template: "{{ state_attr('sensor.indoors_1st_floor_temperature', 'Battery numeric') * 11 + 1 }}"
+        unit_of_measurement: "%"
+      indoors_2nd_floor_battery:
+        friendly_name: "2nd Floor Termometer Battery"
+        entity_id: sensor.indoors_2nd_floor_temperature
+        value_template: "{{ state_attr('sensor.indoors_2nd_floor_temperature', 'Battery numeric') * 11 + 1 }}"
+        unit_of_measurement: "%"
+      lumenhygro_temperature_battery:
+        friendly_name: "Lux Meter Battery"
+        entity_id: sensor.lumenhygro_temperature
+        value_template: "{{ state_attr('sensor.lumenhygro_temperature', 'Battery numeric') * 11 + 1 }}"
+        unit_of_measurement: "%"
+      huetemp_rectified:
+        friendly_name: "Hue Temperature"
+        entity_id: sensor.0x0017880104b4cf95_temperature
+        value_template: "{{ (states('sensor.0x0017880104b4cf95_temperature') | float - 1.3) | round(1) }}"
+        unit_of_measurement: "°C"
+
+binary_sensor:
+  - platform: rfxtrx
+    automatic_add: False
+    devices:
+      0913001f8ac0c9015c60:
+        name: "Living Room"
+        device_class: motion 
+        off_delay:
+          seconds: 9
+  - platform: template
+    sensors:
+      motion_md:
+        friendly_name: "Main Entrance"
+        entity_id: light.main_door_lamp
+        value_template: '{{ is_state("light.main_door_lamp", "on") }}'
+        device_class: motion
+
+unifi:
+  controllers:
+    - host: unifi
+      site: Kenet_House
+      ssid_filter:
+        - 'kenet'
+
+#device_tracker:
+#  - platform: unifi
+#    host: 192.168.2.182
+#    username: HA_Test
+#    password: !secret unifi_password
+#    verify_ssl: false
+
+#group:
+#  cocina:
+#    name: Cocina
+#    view: yes
+#    entities:
+#      - light.tradfri_bulb_gu10_ws_400lm
+#      - light.tradfri_bulb_gu10_ws_400lm_2
+#      - light.tradfri_bulb_gu10_ws_400lm_3
+#      - light.tradfri_bulb_gu10_ws_400lm_4
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+# logger:
+#  default: warning
+#  logs:
+#    homeassistant.components.homekit: debug
+#    pyhap: debug
+
+
+# Input select for Zigbee2mqtt debug level
+input_select:
+  zigbee2mqtt_log_level:
+    name: Zigbee2mqtt Log Level
+    options:
+      - debug
+      - info
+      - warn
+      - error
+    initial: info
+    icon: mdi:format-list-bulleted
+
+# Input text to input Zigbee2mqtt friendly_name for scripts
+input_text:
+  zigbee2mqtt_old_name:
+    name: Zigbee2mqtt Old Name
+  zigbee2mqtt_new_name:
+    name: Zigbee2mqtt New Name
+  zigbee2mqtt_remove:
+    name: Zigbee2mqtt Remove
+
+# Scripts for renaming & removing devices
+#script:
+#  zigbee2mqtt_rename:
+#    alias: Zigbee2mqtt Rename
+#    sequence:
+#      service: mqtt.publish
+#      data_template:
+#        topic: zigbee2mqtt/bridge/config/rename
+#        payload_template: >-
+#          {
+#            "old": "{{ states.input_text.zigbee2mqtt_old_name.state | string }}",
+#            "new": "{{ states.input_text.zigbee2mqtt_new_name.state | string }}"
+#          }
+#  zigbee2mqtt_remove:
+#    alias: Zigbee2mqtt Remove
+#    sequence:
+#      service: mqtt.publish
+#      data_template:
+#        topic: zigbee2mqtt/bridge/config/remove
+#        payload_template: "{{ states.input_text.zigbee2mqtt_remove.state | string }}"
+#logger:
+#  default: info
+#  logs:
+#    aiounifi: debug
+#    homeassistant.components.unifi: debug
+#    homeassistant.components.device_tracker.unifi: debug
+#    homeassistant.components.switch.unifi: debug

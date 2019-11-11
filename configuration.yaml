@@ -332,22 +332,22 @@ sensor:
         value_template: "{{ (states('sensor.0x0017880104b4cf95_temperature') | float - 1.3) | round(1) }}"
         unit_of_measurement: "°C"
 
-binary_sensor:
-  - platform: rfxtrx
-    automatic_add: False
-    devices:
-      0913001f8ac0c9015c60:
-        name: "Living Room"
-        device_class: motion 
-        off_delay:
-          seconds: 9
-  - platform: template
-    sensors:
-      motion_md:
-        friendly_name: "Main Entrance"
-        entity_id: light.main_door_lamp
-        value_template: '{{ is_state("light.main_door_lamp", "on") }}'
-        device_class: motion
+#binary_sensor:
+#  - platform: rfxtrx
+#    automatic_add: False
+#    devices:
+#      0913001f8ac0c9015c60:
+#        name: "Living Room"
+#        device_class: motion 
+#        off_delay:
+#          seconds: 9
+#  - platform: template
+#    sensors:
+#      motion_md:
+#        friendly_name: "Main Entrance"
+#        entity_id: light.main_door_lamp
+#        value_template: '{{ is_state("light.main_door_lamp", "on") }}'
+#        device_class: motion
 
 unifi:
   controllers:

@@ -15,9 +15,10 @@ default_view:
     - device_tracker.karolinasiphone_2
     - device_tracker.it000078_2
     - device_tracker.hplaptopnexus
-    - binary_sensor.living_room
-    - binary_sensor.0xd0cf5efffe137419_occupancy
+#    - binary_sensor.living_room
     - binary_sensor.0xd0cf5efffef34139_occupancy
+    - binary_sensor.0x0017880104b4cf95_occupancy
+    - binary_sensor.0xd0cf5efffe137419_occupancy
 #    - binary_sensor.motion_md
     - sun.sun
     - group.zigbee_group
@@ -42,7 +43,7 @@ HueMS:
   name: Hue Motion Sensor
   control: hidden
   entities:
-    - binary_sensor.0x0017880104b4cf95_occupancy
+#    - binary_sensor.0x0017880104b4cf95_occupancy
     - sensor.0x0017880104b4cf95_illuminance
     - sensor.0x0017880104b4cf95_temperature
     - sensor.huetemp_rectified
@@ -129,7 +130,7 @@ indoors_motion:
   view: no
   entities:
     - binary_sensor.0xd0cf5efffe137419_occupancy
-    - binary_sensor.motion_lr
+#    - binary_sensor.motion_lr
     - binary_sensor.0x0017880104b4cf95_occupancy
     
 zigbee_group:

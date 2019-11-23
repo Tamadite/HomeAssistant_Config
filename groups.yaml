@@ -57,7 +57,7 @@ room_lights:
     - switch.family_room_lamp
     - switch.main_door_lamp
     - switch.garden_lamp
-    - light.living_room_ball_lamp
+    - light.livingroom_balllamp_light
     
 # cocina_room:
 #  name: Cocina
@@ -93,7 +93,16 @@ environment:
     - sensor.indoors_1st_floor_humidity
     - sensor.indoors_2nd_floor_humidity
     - sensor.weather_temperature
+    - sensor.weather_dewpoint_temperature
     - sensor.weather_humidity
+    - sensor.weather_pressure
+    - sensor.weather_wind_speed
+    - sensor.weather_wind_direction
+    - sensor.weather_fog
+    - sensor.weather_cloudiness
+    - sensor.weather_low_clouds
+    - sensor.weather_medium_clouds
+    - sensor.weather_high_clouds
     
 decoration:
   name: Decoration
@@ -101,7 +110,7 @@ decoration:
     - switch.decoration
     - switch.garden_lamp
     - switch.0x000d6ffffedacc35_switch
-    - light.living_room_ball_lamp
+    - light.livingroom_balllamp_light
 #    - switch.family_room_lamp
 
 decorationautomation:
@@ -143,7 +152,7 @@ zigbee_group:
 #    - sensor.bridge_state
     - sensor.bridge_state
     - sensor.zigbee2mqtt_version
-    - sensor.coordinator_version
+#    - sensor.coordinator_version
     - input_select.zigbee2mqtt_log_level
     - switch.zigbee2mqtt_main_join
     - timer.zigbee_permit_join
@@ -180,7 +189,8 @@ battery:
   view: yes
   entities:
     - sensor.remote_control_cocina
-    - sensor.tradfri_motion_sensor_2
+    - sensor.0xd0cf5efffef34139_battery
+    - sensor.0xd0cf5efffe137419_battery
     - sensor.indoors_1st_floor_battery
     - sensor.indoors_2nd_floor_battery
     - sensor.nevera_battery

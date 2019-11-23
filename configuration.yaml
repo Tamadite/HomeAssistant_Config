@@ -259,6 +259,15 @@ sensor:
     monitored_conditions:
       - temperature
       - humidity
+      - windSpeed
+      - pressure
+      - windDirection
+      - fog
+      - cloudiness
+      - lowClouds
+      - mediumClouds
+      - highClouds
+      - dewpointTemperature
   - platform: rfxtrx
     automatic_add: False
     devices:

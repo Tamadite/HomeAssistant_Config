@@ -18,6 +18,8 @@ homeassistant:
 #   - type: homeassistant
 
 webhook:
+
+mobile_app:
  
 zigbee2mqtt_networkmap:
   #topic: your topic (optional, default zigbee2mqtt)
@@ -135,6 +137,10 @@ history_graph:
     entities:
       - !secret sensor_id1_p1
       - !secret sensor_id1_p2
+  grwinddir:
+    name: Wind Direction Graph
+    entities:
+      - sensor.weather_wind_direction
 
 # View all events in a logbook
 logbook:

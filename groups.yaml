@@ -25,6 +25,7 @@ default_view:
     - group.HueMS
     - history_graph.temperature_graph
     - history_graph.air_quality_graph
+    - history_graph.wind_direction_graph
 
 TestZB:
   name: TestZigbee

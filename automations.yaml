@@ -25,6 +25,26 @@
       seconds: 00
     action:
       service: zigbee2mqtt_networkmap.update
+ 
+  - alias: MQTT Humidity 1s Floor 
+    trigger:
+      platform: state
+      entity_id: sensor.indoors_1st_floor_humidity
+    action:
+      service: mqtt.publish
+      data:
+        topic: "home/hum1stfloor"
+        payload_template: "{{ states.sensor.indoors_1st_floor_humidity.state }}"  
+
+  - alias: MQTT Temperature 1s Floor 
+    trigger:
+      platform: state
+      entity_id: sensor.indoors_1st_floor_temperature
+    action:
+      service: mqtt.publish
+      data:
+        topic: "home/temp1stfloor"
+        payload_template: "{{ states.sensor.indoors_1st_floor_temperature.state }}" 
 
   - alias: "Congelador door open"
     trigger:

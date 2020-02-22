@@ -12,9 +12,9 @@ default_view:
     - media_player.squeezebox_boom
 #    - device_tracker.karolina_huawei
     - device_tracker.karolina_huawei_2
-    - device_tracker.karolinasiphone_2
-    - device_tracker.it000078_2
-    - device_tracker.hplaptopnexus
+#    - device_tracker.karolinasiphone_2
+#    - device_tracker.it000078_2
+#    - device_tracker.hplaptopnexus
 #    - binary_sensor.living_room
     - binary_sensor.0xd0cf5efffef34139_occupancy
     - binary_sensor.0x0017880104b4cf95_occupancy
@@ -26,7 +26,9 @@ default_view:
     - history_graph.temperature_graph
     - history_graph.air_quality_graph
     - history_graph.wind_direction_graph
-
+    - history_graph.total_volatile_organic_compound
+    - history_graph.equivalent_co2
+    
 TestZB:
   name: TestZigbee
   entities:
@@ -60,22 +62,22 @@ room_lights:
     - switch.garden_lamp
     - light.livingroom_balllamp_light
     
-# cocina_room:
-#  name: Cocina
+#kitchen_room:
+#  name: Kitchen
 #  icon: mdi:stove
 #  entities:
-#    - light.tradfri_bulb_gu10_ws_400lm
-#    - light.tradfri_bulb_gu10_ws_400lm_2
-#    - light.tradfri_bulb_gu10_ws_400lm_3
-#    - light.tradfri_bulb_gu10_ws_400lm_4
+#    - light.kitchen_1_light
+#    - light.kitchen_2_light
+#    - light.kitchen_3_light
+#    - light.0x90fd9ffffe90158b_light
 
 family_room_ceiling:
   name: Family Room Ceiling Lamp
   entities:
     - light.family_room
 
-#cocina:
-#  name: Cocina
+#kitchen:
+#  name: Kitchen
 #  view: no
 #  entities:
 #    - light.tradfri_bulb_gu10_ws_400lm
@@ -178,6 +180,8 @@ cold:
     - sensor.nevera_humidity
     - sensor.congelador_temperature
     - sensor.congelador_humidity
+    - history_graph.nevera_temperature_graph
+    - history_graph.congelador_temperature_graph
 
 Link:
   name: Link
@@ -189,7 +193,8 @@ battery:
   name: Battery
   view: yes
   entities:
-    - sensor.remote_control_cocina
+    - sensor.tradfri_remote_control
+#    - sensor.remote_control_cocina
     - sensor.0xd0cf5efffef34139_battery
     - sensor.0xd0cf5efffe137419_battery
     - sensor.indoors_1st_floor_battery

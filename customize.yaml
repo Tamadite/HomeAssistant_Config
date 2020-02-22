@@ -19,9 +19,9 @@ light.main_door_lamp:
 light.family_room:
   icon: mdi:ceiling-light
 switch.main_door_lamp:
-  icon: mdi:wall-sconce-flat
+  icon: mdi:wall-sconce-round
 switch.garden_lamp:
-  icon: mdi:wall-sconce-flat
+  icon: mdi:wall-sconce
 switch.family_room_lamp:
   icon: mdi:lamp
 light.cocina:

@@ -77,9 +77,10 @@ luftdaten:
     monitored_conditions:
       - P1
       - P2
+      - temperature
 #  - sensor_id: !secret sensor_id2
 #    show_on_map: false
-#    scan_interval: 241
+#    scan_interval: 240
 #    sensors:
 #      monitored_conditions:
 #        - temperature
@@ -141,6 +142,22 @@ history_graph:
     name: Wind Direction Graph
     entities:
       - sensor.weather_wind_direction
+  grnevera_temp:
+    name: Nevera Temperature Graph
+    entities:
+      - sensor.nevera_temperature
+  grcongelador_temp:
+    name: Congelador Temperature Graph
+    entities:
+      - sensor.congelador_temperature
+  grtvoc:
+    name: Total Volatile Organic Compound
+    entities:
+      - sensor.tvoc
+  greco2:
+    name: Equivalent CO2
+    entities:
+      - sensor.eco2
 
 # View all events in a logbook
 logbook:
@@ -198,6 +215,14 @@ light:
     brightness: true
     schema: "json"
     command_topic: "zigbee2mqtt/0x000d6ffffe62fa15/set"
+#  - platform: "mqtt"
+#    name: "Kitchen 1"
+#    state_topic: "zigbee2mqtt/0x90fd9ffffe90158b"
+#    availability_topic: "zigbee2mqtt/bridge/state"
+#    brightness: true
+#    color_temp: true
+#    schema: "json"
+#    command_topic: "zigbee2mqtt/0x90fd9ffffe90158b/set"  
   - platform: rfxtrx
     automatic_add: False
     signal_repetitions: 1
@@ -205,12 +230,13 @@ light:
       0b1100020005aa2a0b010f70:
         name: "Family Room"
   - platform: group
-    name: Cocina
+    name: Kitchen
+#    icon: 'mdi:stove'
     entities:
-      - light.tradfri_bulb_gu10_ws_400lm
-      - light.tradfri_bulb_gu10_ws_400lm_2
-      - light.tradfri_bulb_gu10_ws_400lm_3
-      - light.tradfri_bulb_gu10_ws_400lm_4
+      - light.kitchen_1_light
+      - light.kitchen_2_light
+      - light.kitchen_3_light
+      - light.0x90fd9ffffe90158b_light
 #  - platform: "mqtt"
 #    state_topic: "zigbee2mqtt/decorationball"
 #    availability_topic: "zigbee2mqtt/bridge/state"
@@ -233,8 +259,15 @@ sensor:
   - platform: "mqtt"
     state_topic: "zigbee2mqtt/0x000d6ffffe62fa15"
     availability_topic: "zigbee2mqtt/bridge/state"
-    unit_of_measurement: "-"
+    icon: "mdi:signal"
+    unit_of_measurement: "lqi"
     value_template: "{{ value_json.linkquality }}"
+#  - platform: "mqtt"
+#    state_topic: "zigbee2mqtt/0x90fd9ffffe90158b"
+#    availability_topic: "zigbee2mqtt/bridge/state"
+#    icon: "mdi:signal"
+#    unit_of_measurement: "lqi"
+#    value_template: "{{ value_json.linkquality }}"
 #  - platform: time_date
 #    display_options:
 #      - 'date_time'
@@ -260,6 +293,16 @@ sensor:
 #    availability_topic: "zigbee2mqtt/bridge/state"
 #    unit_of_measurement: "-"
 #    value_template: "{{ value_json.linkquality }}"
+  - platform: mqtt
+    name: "TVOC"
+    state_topic: "sensor/tvoc"
+    qos: 0
+    unit_of_measurement: "ppb"
+  - platform: mqtt
+    name: "eCO2"
+    state_topic: "sensor/eco2"
+    qos: 0
+    unit_of_measurement: "ppm"
   - platform: yr
     name: Weather
     monitored_conditions:

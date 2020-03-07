@@ -49,7 +49,7 @@
   - alias: "Congelador door open"
     trigger:
       platform: template
-      value_template: "{{ (states.sensor.congelador_temperature.state | int > -5) }}"
+      value_template: "{{ (states.sensor.congelador_temperature.state | int > -15) }}"
     action:
       service: notify.notify
       data:
